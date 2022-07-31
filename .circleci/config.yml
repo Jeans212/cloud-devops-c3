@@ -247,7 +247,6 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            yum update
             yum install python37
       - run: yum install -y ansible
       - run:
