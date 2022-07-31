@@ -247,14 +247,11 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            apt-get update
-            apt-get install python3
+            yum install -y python3
       - run:
           name: Install ansible
           command: |
-            apt-add-repository ppa:ansible/ansible
-            apt-get update
-            apt-get install ansible -y
+            yum install -y ansible
       - run:
           name: Install node and npm
           command: |
