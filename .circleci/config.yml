@@ -165,9 +165,10 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             # Your code here
+            echo "[web]" > inventory
             aws ec2 describe-instances \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
-              --output text >> inventory.txt
+              --output text >> inventory
             cat inventory.txt
       - persist_to_workspace:
           root: ~/
@@ -201,7 +202,28 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure
-      - destroy-environment      
+      - destroy-environment
+
+  run-migrations:
+    docker:
+      # Docker image here that supports NodeJS
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Run migrations
+          command: |
+            # Your code here
+            exit 1
+      - run:
+          name: Send migration results to memstash
+          command: |
+            # Your code here
+            exit 1
+     # Here's where you will add some code to rollback on failure    
 
 
 workflows:
@@ -218,4 +240,5 @@ workflows:
       - scan-frontend:
           requires: [build-frontend]
       - deploy-infrastructure
-      - configure-infrastructure
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
