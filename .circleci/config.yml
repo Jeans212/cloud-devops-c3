@@ -247,7 +247,8 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            apt install python3
+            apt-get update
+            apt-get install python3
       - run:
           name: Install ansible
           command: |
