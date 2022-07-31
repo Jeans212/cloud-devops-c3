@@ -247,8 +247,13 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            yum install python37
-      - run: yum install -y ansible
+            apt install python3
+      - run:
+          name: Install ansible
+          command: |
+            apt-add-repository ppa:ansible/ansible
+            apt-get update
+            apt-get install ansible -y
       - run:
           name: Install node and npm
           command: |
@@ -281,7 +286,24 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       # Here's where you will add some code to rollback on failure
-      - destroy-environment     
+      - destroy-environment
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+    steps:
+      # Checkout code from git
+      # Add ssh keys with fingerprint
+      # attach workspace
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Deploy backend
+          command: |
+            # your code here
+      # Here's where you will add some code to rollback on failure  
+     
 
 
 workflows:
