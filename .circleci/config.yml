@@ -171,9 +171,9 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - cloud-devops-c3/.circleci/ansible/inventory.txt
+            - .circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
+      # - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -187,7 +187,7 @@ jobs:
           fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
       # attach workspace
       - attach_workspace:
-          at: ~/cloud-devops-c3/.circleci/ansible/inventory.txt
+          at: ~/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
@@ -200,7 +200,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
+      # - destroy-environment
 
   run-migrations:
     docker:
@@ -226,12 +226,12 @@ jobs:
           name: Send migration results to memstash
           command: |
             # Your code here
-            if grep -q "has been executed successfully." ~/cloud-devops-c3/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/backend/migrations_dump.txt
             then
               curl https://kvdb.io/6T2mNdegi5V8xUB4uWSTQz/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
+      # - destroy-environment
 
   deploy-frontend:
     docker:
@@ -245,7 +245,7 @@ jobs:
           command: |
             yum install -y tar gzip
       - attach_workspace:
-          at: ~/cloud-devops-c3
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -307,7 +307,7 @@ jobs:
             yum install -y tar gzip
       # attach workspace
       - attach_workspace:
-          at: ~/cloud-devops-c3/.circleci/ansible/inventory.txt
+          at: ~/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
