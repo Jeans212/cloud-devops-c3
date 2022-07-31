@@ -216,7 +216,8 @@ jobs:
           command: |
             # Your code here
             cd backend
-            rm -rf node_modules && rm package-lock.json && npm install
+            npm cache clean -force
+            rm package-lock.json && npm install
             # npm audit fix --audit-level=critical --force
             npm audit fix --force
             # Run and save the migration output
