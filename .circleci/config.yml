@@ -187,7 +187,7 @@ jobs:
           fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
       # attach workspace
       - attach_workspace:
-          at: ~/
+          at: ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
@@ -242,7 +242,7 @@ jobs:
           command: |
             yum install -y tar gzip
       - attach_workspace:
-          at: ~/
+          at: ~/project
       - run:
           name: Install dependencies
           command: |
@@ -251,6 +251,8 @@ jobs:
       - run:
           name: Install ansible
           command: |
+            yum update -y
+            yum install -y epel-release
             yum install -y ansible
       - run:
           name: Install node and npm
@@ -292,8 +294,13 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
+      - add_ssh_keys:
+        fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
       # attach workspace
+      - attach_workspace:
+          at: ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
