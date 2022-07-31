@@ -167,7 +167,7 @@ jobs:
             # Your code here
             aws ec2 describe-instances \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
-              --output text >> ~/project/.circleci/ansible/inventory.txt
+              --output text >> inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -297,7 +297,11 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-        fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
+          fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
+      - run:
+          name: Install tar.gz package
+          command: |
+            yum install -y tar gzip
       # attach workspace
       - attach_workspace:
           at: ~/project/.circleci/ansible/inventory.txt
