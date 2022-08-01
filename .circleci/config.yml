@@ -148,7 +148,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --tags project=udapeople-back \
+              --tags project=udapeople-backend-* \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
 
@@ -157,7 +157,7 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --tags project=udapeople-front \
+              --tags project=udapeople-frontend-* \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
 
@@ -165,13 +165,15 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             # Your code here
+            cd .circleci/ansible
             aws ec2 describe-instances \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
-              --output text >> inventory.txt
+              --output text >> inventory
+            cat inventory
       - persist_to_workspace:
           root: ~/
           paths:
-            - .circleci/ansible/inventory.txt
+            - .circleci/ansible/inventory
       # Here's where you will add some code to rollback on failure
       # - destroy-environment
 
@@ -187,18 +189,19 @@ jobs:
           fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
       # attach workspace
       - attach_workspace:
-          at: ~/.circleci/ansible/inventory.txt
+          at: ~/
       - run:
           name: Install dependencies
           command: |
             # Your code here
+            cd .circleci/ansible
             apk add --update ansible
       - run:
           name: Configure server
           command: |
             # Your code here
             cd .circleci/ansible
-            ansible-playbook -i inventory.txt configure-server.yml
+            ansible-playbook -i inventory configure-server.yml
       # Here's where you will add some code to rollback on failure
       # - destroy-environment
 
@@ -209,6 +212,8 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - attach_workspace:
+          at: ~/
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -216,18 +221,16 @@ jobs:
           command: |
             # Your code here
             cd backend
-            npm cache clean -force
-            rm package-lock.json && npm install
-            # npm audit fix --audit-level=critical --force
-            npm audit fix --force
             # Run and save the migration output
             npm run migrations > migrations_dump.txt
+            cat migrations_dump.txt
       - run:
           name: Send migration results to memstash
           command: |
             # Your code here
             if grep -q "has been executed successfully." ~/backend/migrations_dump.txt
             then
+              echo "DB migration successful"
               curl https://kvdb.io/6T2mNdegi5V8xUB4uWSTQz/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       # Here's where you will add some code to rollback on failure
@@ -287,7 +290,7 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
       # Here's where you will add some code to rollback on failure
       - destroy-environment
 
@@ -307,11 +310,14 @@ jobs:
             yum install -y tar gzip
       # attach workspace
       - attach_workspace:
-          at: ~/.circleci/ansible/inventory.txt
+          at: ~/
       - run:
           name: Install dependencies
           command: |
             # your code here
+            cd /tmp
+            apk add --update ansible curl rsync openssh nodejs npm
+            pip install awscli
       - run:
           name: Deploy backend
           command: |
@@ -324,8 +330,8 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
-            cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            cat inventory
+            ansible-playbook -i inventory deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment
 
@@ -345,4 +351,10 @@ workflows:
       - deploy-infrastructure
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      - run-migrations
+      - run-migrations:
+          requires:
+            - test-backend
+            - test-frontend
+            - scan-backend
+            - scan-frontend
+            - configure-infrastructure
