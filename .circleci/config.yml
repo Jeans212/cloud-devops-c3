@@ -173,9 +173,9 @@ jobs:
             cat inventory.txt
             ls -al
       - persist_to_workspace:
-          root: .
+          root: ~/
           paths:
-            - ~/inventory.txt
+            - inventory.txt
       # Here's where you will add some code to rollback on failure
       # - destroy-environment
 
