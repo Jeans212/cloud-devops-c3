@@ -219,6 +219,7 @@ jobs:
           keys: [backend-build]
       - run:
           name: Run migrations
+          no_output_timeout: 30m
           command: |
             # Your code here
             cd backend
@@ -355,8 +356,4 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires:
-            - test-backend
-            - test-frontend
-            - scan-backend
-            - scan-frontend
             - configure-infrastructure
