@@ -218,7 +218,7 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Run migrations
+          name: Run and show migrations
           no_output_timeout: 30m
           command: |
             # Your code here
