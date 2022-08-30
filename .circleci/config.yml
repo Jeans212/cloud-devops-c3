@@ -360,9 +360,9 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - deploy-infrastructure
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-backend, scan-frontend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
-          requires:
-            - configure-infrastructure
+          requires: [configure-infrastructure]
