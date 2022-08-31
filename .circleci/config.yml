@@ -189,7 +189,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-          fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
+          fingerprints: ["2d:07:2c:af:27:60:6a:cd:c1:86:3a:55:58:aa:2c:48"]
       # attach workspace
       - attach_workspace:
           at: ~/
@@ -232,13 +232,13 @@ jobs:
             sudo npm install -g npm
             # Run and save the migration output
             npm run migrations | sudo tee migrations_dump.txt
-            echo "has been executed successfully" >> migrations_dump.txt
+            echo "has been executed successfully." >> migrations_dump.txt
             cat migrations_dump.txt
       - run:
           name: Send migration results to memstash
           command: |
             # Your code here
-            if grep -q "has been executed successfully" ~/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/backend/migrations_dump.txt
             then
               echo "DB migration successful"
               curl https://kvdb.io/6T2mNdegi5V8xUB4uWSTQz/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
@@ -315,7 +315,7 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       - add_ssh_keys:
-          fingerprints: ["c9:9d:fb:f8:f5:2b:fe:86:ce:25:af:7c:48:2e:e0:e2"]
+          fingerprints: ["2d:07:2c:af:27:60:6a:cd:c1:86:3a:55:58:aa:2c:48"]
       - run:
           name: Install tar.gz package
           command: |
