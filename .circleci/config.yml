@@ -276,8 +276,8 @@ jobs:
       - run:
           name: Install ansible
           command: |
-            yum install -y epel-release
-            yum install -y ansible
+            yum update -y
+            amazon-linux-extras install ansible2 -y
       - run:
           name: Install node and npm
           command: |
