@@ -264,6 +264,7 @@ jobs:
           at: ~/
       - run:
           command: |
+            sudo apt-get install zip unzip
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
@@ -315,10 +316,10 @@ jobs:
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["2d:07:2c:af:27:60:6a:cd:c1:86:3a:55:58:aa:2c:48"]
-      - run:
-          name: Install tar.gz package
-          command: |
-            pip install tar.gz
+      # - run:
+      #     name: Install tar.gz package
+      #     command: |
+      #       pip install tar.gz
       # attach workspace
       - attach_workspace:
           at: ~/
