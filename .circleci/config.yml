@@ -33,7 +33,7 @@ commands:
             then
               cd ~/project/backend
               npm install
-              npm run migration:revert
+              npm run migrations:revert
             fi  
 jobs:
   build-frontend:
@@ -394,7 +394,7 @@ jobs:
           command: |
             # your code here
             # Fetch and prepare the BACKEND_IP env var
-            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress")
+            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress --output=text")
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
@@ -402,7 +402,7 @@ jobs:
           command: |
             # your code here
             # Fetch and prepare the BACKEND_IP env var
-            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress")
+            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress --output=text")
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
