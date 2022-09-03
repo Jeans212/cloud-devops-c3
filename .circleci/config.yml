@@ -219,11 +219,12 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            apk add --update ansible openssh
+            cd /tmp
+            apk add --update ansible tar gzip rsync openssh
             pip install awscli
       - run:
           name: Configure server
-          no_output_timeout: 30m
+          no_output_timeout: 5m
           command: |
             # Your code here
             cd .circleci/ansible
