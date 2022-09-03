@@ -220,7 +220,7 @@ jobs:
           command: |
             # Your code here
             apk add --update tar gzip rsync openssh
-            sudo apt-get install gcc
+            apt-get install gcc
             python -m pip install --upgrade pip
             pip install awscli
             pip install ansible
