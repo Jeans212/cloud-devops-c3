@@ -383,10 +383,18 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: Install dependencies
+          command: |
+            # Install node and npm
+            curl --silent --location https://rpm.nodesource.com/setup_13.x | bash -
+            yum -y install nodejs
+            npm -v
+      - run:
           name: Get backend url
           command: |
             # your code here
             # Fetch and prepare the BACKEND_IP env var
+            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress")
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
       - run:
@@ -394,6 +402,7 @@ jobs:
           command: |
             # your code here
             # Fetch and prepare the BACKEND_IP env var
+            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress")
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
