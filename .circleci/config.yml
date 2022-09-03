@@ -219,7 +219,6 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            apt install tar gzip -y
             apk add --update ansible openssh
       - run:
           name: Configure server
