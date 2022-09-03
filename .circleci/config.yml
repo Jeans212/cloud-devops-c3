@@ -372,15 +372,10 @@ jobs:
   smoke-test:
     docker:
       # Lightweight Docker image
-      - image: python:3.7-alpine3.11
+      - image: amazon/aws-cli
     steps:
       # Checkout code from git
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-            pip install awscliv2
       - run:
           name: Get backend url
           command: |
@@ -392,6 +387,9 @@ jobs:
           name: Backend smoke test.
           command: |
             # your code here
+            # Fetch and prepare the BACKEND_IP env var
+            # export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
