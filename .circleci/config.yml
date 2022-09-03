@@ -220,6 +220,7 @@ jobs:
           command: |
             # Your code here
             apk add --update ansible openssh
+            pip install awscli
       - run:
           name: Configure server
           no_output_timeout: 30m
