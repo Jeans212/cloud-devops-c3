@@ -172,6 +172,7 @@ jobs:
               --tags project=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7} \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+            sleep 30
 
       - run:
           name: Ensure front-end infrastructure exist
@@ -218,7 +219,7 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            cd .circleci/ansible
+            apt install tar gzip -y
             apk add --update ansible openssh
       - run:
           name: Configure server
@@ -226,6 +227,11 @@ jobs:
           command: |
             # Your code here
             cd .circleci/ansible
+            aws ec2 describe-instances \
+              --query "Reservations[*].Instances[*].[PublicIpAddress]" \
+              --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text >> ~/project/.circleci/ansible/inventory.txt
+            cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment
@@ -364,6 +370,10 @@ jobs:
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
+            aws ec2 describe-instances \
+              --query "Reservations[*].Instances[*].[PublicIpAddress]" \
+              --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text >> ~/project/.circleci/ansible/inventory.txt
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
@@ -409,6 +419,7 @@ jobs:
             --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
+            sleep 30
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
