@@ -190,7 +190,7 @@ jobs:
             aws ec2 describe-instances \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               --filters "Name=tag:project,Values=udapeople-back" \
-              --output text >> inventory.txt
+              --output text >> ~/project/.circleci/ansible/inventory.txt
             cat inventory.txt
             # cat inventory.txt >> ~/project/.circleci/ansible/inventory.txt
 
@@ -219,9 +219,10 @@ jobs:
           command: |
             # Your code here
             cd .circleci/ansible
-            apk add --update ansible
+            apk add --update ansible aws-cli openssh
       - run:
           name: Configure server
+          no_output_timeout: 30m
           command: |
             # Your code here
             cd .circleci/ansible
@@ -313,7 +314,8 @@ jobs:
           name: Get backend url
           command: |
             # your code here
-            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress]" \
+            --filters --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -425,8 +427,8 @@ jobs:
               return 1
             fi
       # Here's where you will add some code to rollback on failure
-      # - destroy-environment
-      # - revert-migrations
+      - destroy-environment
+      - revert-migrations
 
   cloudfront-update:
     docker:
