@@ -220,7 +220,8 @@ jobs:
           command: |
             # Your code here
             cd /tmp
-            apk add --update ansible tar gzip rsync openssh
+            apk add --update tar gzip rsync openssh
+            pip install ansible
             pip install awscli
       - run:
           name: Configure server
