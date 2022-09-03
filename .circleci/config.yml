@@ -219,10 +219,11 @@ jobs:
           name: Install dependencies
           command: |
             # Your code here
-            cd /tmp
             apk add --update tar gzip rsync openssh
-            pip install ansible
+            sudo apt-get install gcc
+            python -m pip install --upgrade pip
             pip install awscli
+            pip install ansible
       - run:
           name: Configure server
           no_output_timeout: 5m
