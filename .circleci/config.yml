@@ -357,7 +357,6 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            cd /tmp
             apk add --update ansible curl rsync openssh nodejs npm
             pip install awscli
       - run:
@@ -402,15 +401,15 @@ jobs:
             curl --silent --location https://rpm.nodesource.com/setup_13.x | bash -
             yum -y install nodejs
             npm -v
-      - run:
-          name: Get backend url
-          command: |
-            # your code here
-            # Fetch and prepare the BACKEND_IP env var
-            export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress]" \
-            --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+      # - run:
+      #     name: Get backend url
+      #     command: |
+      #       # your code here
+      #       # Fetch and prepare the BACKEND_IP env var
+      #       export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress]" \
+      #       --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+      #       export API_URL="http://${BACKEND_IP}:3030"
+      #       echo "${API_URL}"
       - run:
           name: Backend smoke test.
           command: |
@@ -420,7 +419,7 @@ jobs:
             --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-            sleep 30
+            sleep 60
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
