@@ -4,7 +4,7 @@
   apt:
     update_cache: yes
 
-- name: "upgrade packages."
+- name: "upgrade packages"
   become: true
   apt:
     upgrade: "yes"
@@ -14,16 +14,16 @@
   apt:
     autoremove: true
 
-- name: "Run a shell command to get node"
-  become: true
+- name: install node 
   shell: |
-    curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-    
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - && sudo apt-get install -y nodejs
+
 - name: "install dependencies"
   become: true
   apt: 
     name: ["nodejs", "npm"]
     state: latest
+    update_cache: yes
 
 - name: "install pm2"
   become: true
