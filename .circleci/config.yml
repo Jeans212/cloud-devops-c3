@@ -409,7 +409,7 @@ jobs:
       - run: 
           name: "Install dependencies"
           command: |
-            apk add --update ansible curl rsync openssh nodejs npm
+            apk add --update ansible curl rsync openssh nodejs npm pip
             pip install awscli
       # - run:
       #     name: Install dependencies
@@ -493,6 +493,25 @@ jobs:
       - destroy-environment
       - revert-migrations
 
+  smoke:
+    docker:
+      # Lightweight Docker image
+      - image: alpine:latest
+    steps:
+      # Checkout code from git
+      - checkout
+      - run:
+          name: Install tar.gz package
+          command: |
+            apk add --update tar gzip
+      - attach_workspace:
+          at: ~/
+      - run: 
+          name: "Install dependencies"
+          command: |
+            apk add --update ansible curl rsync openssh nodejs npm pip
+            pip install awscli
+
   cleanup:
     docker:
       # Docker image here
@@ -533,26 +552,27 @@ workflows:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-backend, scan-frontend]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
+      - smoke
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-backend, scan-frontend]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      # - smoke-test:
+      #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
