@@ -17,14 +17,14 @@
 - name: "Run a shell command to get node"
   become: true
   shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - && sudo apt-get install -y nodejs
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs
     
-- name: "install dependencies"
-  become: true
-  apt: name={{ item }} state=present
-  with_items:
-    - nodejs
-    - npm
+# - name: "install dependencies"
+#   become: true
+#   apt: name={{ item }} state=present
+#   with_items:
+#     - nodejs
+#     - npm
 
 - name: "install pm2"
   become: true
