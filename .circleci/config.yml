@@ -224,7 +224,7 @@ jobs:
             pip install awscli
       - run:
           name: Configure server
-          no_output_timeout: 5m
+          no_output_timeout: 30m
           command: |
             # Your code here
             cd .circleci/ansible
