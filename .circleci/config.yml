@@ -365,21 +365,6 @@ jobs:
           command: |
             # your code here
             cd backend
-
-            # touch .env
-            # echo ENVIRONMENT=production > .env
-            # echo NODE_ENV=production >> .env
-            # echo TYPEORM_CONNECTION=postgres >> .env
-            # echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> .env
-            # echo TYPEORM_HOST=$TYPEORM_HOST >> .env
-            # echo TYPEORM_PORT=$TYPEORM_PORT >> .env
-            # echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> .env
-            # echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> .env
-            # echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> .env
-            # echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> .env
-            # echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> .env
-
-            # cat .env
             npm i
             npm run build
             cd ..
@@ -416,24 +401,8 @@ jobs:
           command: |
             apk add --update ansible curl rsync openssh nodejs npm python3 py3-pip
             pip3 install awscli
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # Install node and npm
-      #       curl --silent --location https://rpm.nodesource.com/setup_13.x | bash -
-      #       yum -y install nodejs
-      #       npm -v
-      # - run:
-      #     name: Get backend url
-      #     command: |
-      #       # your code here
-      #       # Fetch and prepare the BACKEND_IP env var
-      #       export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress]" \
-      #       --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
-      #       export API_URL="http://${BACKEND_IP}:3030"
-      #       echo "${API_URL}"
       - run:
-          name: Backend smoke test.
+          name: Get backend url
           command: |
             # your code here
             # Fetch and prepare the BACKEND_IP env var
@@ -441,6 +410,15 @@ jobs:
             --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
+      - run:
+          name: Backend smoke test.
+          command: |
+            # your code here
+            # Fetch and prepare the BACKEND_IP env var
+            # export BACKEND_IP=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].[PublicIpAddress]" \
+            # --filters "Name=tag:project,Values=udapeople-back-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+            # export API_URL="http://${BACKEND_IP}:3030"
+            # echo "${API_URL}"
             sleep 60
             if curl -v "${API_URL}/api/status" | grep "ok"
             then
@@ -457,7 +435,7 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
                 # Change this to 0 after the job fails
-              return 1
+              return 0
             else
               return 1
             fi
@@ -558,7 +536,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
+      - cloudfront-update:
+          requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
