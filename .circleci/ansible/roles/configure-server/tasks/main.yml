@@ -14,9 +14,12 @@
   apt:
     autoremove: true
 
-- name: install node 
+- name: install node
+  become: true
   shell: |
     curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs
+    npm install --g n
+    n 13.8.0
 
 # - name: "install dependencies"
 #   become: true
