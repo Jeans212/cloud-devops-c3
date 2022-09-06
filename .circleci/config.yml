@@ -462,9 +462,9 @@ jobs:
               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
               --no-paginate --output text)
             echo $OldWorkflowID > ~/project/OldWorkflowID.txt
-            la -al
+            ls -al
             echo "------------"
-            cat ~/project/OldWorkflowID.txt
+            cat ~/OldWorkflowID.txt
             ls -all
 
             aws cloudformation deploy \
