@@ -463,6 +463,7 @@ jobs:
               --no-paginate --output text)
             echo $OldWorkflowID > ~/project/OldWorkflowID.txt
             cat ~/project/OldWorkflowID.txt
+            echo "---------/n----------"
             ls -al
 
             aws cloudformation deploy \
@@ -473,10 +474,11 @@ jobs:
             
             echo OldWorkflowID: "${OldWorkflowID}"
             echo Current Workflow ID: "${CIRCLE_WORKFLOW_ID:0:7}"
+            cat ~/project/OldWorkflowID.txt
       - persist_to_workspace:
-          root: project
+          root: ~/
           paths:
-            - OldWorkflowID.txt
+            - project/OldWorkflowID.txt
       # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
@@ -493,7 +495,7 @@ jobs:
           command: |
             yum install -y tar gzip
       - attach_workspace:
-          at: ./
+          at: ~/
       - run:
           name: Fetch old stack workflow id
           command: |
