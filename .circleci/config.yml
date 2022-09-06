@@ -464,7 +464,7 @@ jobs:
             echo $OldWorkflowID > ~/project/OldWorkflowID.txt
             ls -al
             echo "------------"
-            cat ~/OldWorkflowID.txt
+            cat ~/project/OldWorkflowID.txt
             ls -al
 
             aws cloudformation deploy \
