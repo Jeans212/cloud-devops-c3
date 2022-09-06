@@ -411,7 +411,7 @@ jobs:
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             sleep 60
-            if curl -v "${API_URL}/api/status" | grep "ok"
+            if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
             else
@@ -476,7 +476,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - OldWorkflowID.txt
+            - project/*
       # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
@@ -493,7 +493,7 @@ jobs:
           command: |
             yum install -y tar gzip
       - attach_workspace:
-          at: ~/
+          at: ./
       - run:
           name: Fetch old stack workflow id
           command: |
