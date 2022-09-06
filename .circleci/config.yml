@@ -465,7 +465,7 @@ jobs:
             ls -al
             echo "------------"
             cat ~/OldWorkflowID.txt
-            ls -all
+            ls -al
 
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
