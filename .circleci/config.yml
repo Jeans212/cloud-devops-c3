@@ -442,6 +442,12 @@ jobs:
       # Checkout code from git
       - checkout
       - run:
+          name: Install tar.gz package
+          command: |
+            yum install -y tar gzip
+      - attach_workspace:
+          at: ~/
+      - run:
           name: Install dependencies
           command: |
             # your code here
@@ -463,6 +469,8 @@ jobs:
               --stack-name "InitialStack-${OldWorkflowID}" \
               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
+            
+            aws cloudformation describe-stack-events --stack-name "InitialStack-udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
 
             echo OldWorkflowID: "${OldWorkflowID}"
             echo Current Workflow ID: "${CIRCLE_WORKFLOW_ID:0:7}"
