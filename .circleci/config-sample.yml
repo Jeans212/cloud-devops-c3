@@ -207,7 +207,8 @@ jobs:
 
   smoke-test:
     docker:
-      # Lightweight Docker image 
+      # Lightweight Docker image
+      # alphine:latest
     steps:
       # Checkout code from git
       - run:
