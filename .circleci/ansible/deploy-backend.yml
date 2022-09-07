@@ -10,7 +10,6 @@
     - ansible_stdout_callback: yaml
   roles:
     - deploy
-    - configure-prometheus-node-exporter
   environment:
     - ENVIRONMENT: production
     - NODE_ENV: production
